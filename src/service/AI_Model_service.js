@@ -81,4 +81,4 @@ class AI_Model_service {
   }
 }
 
-module.exports = new AI_Model_service();
+module.exports = new AI_Model_service(); 

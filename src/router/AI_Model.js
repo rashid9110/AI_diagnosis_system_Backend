@@ -11,7 +11,7 @@ const multer = require('multer');
 Modelrouter.post(
     '/',
     isLoggedIn,
-    uploader.single('XrayImage'),  // Middleware to handle file upload
+    uploader.single('image'),  // Middleware to handle file upload
     AI_Model_controller   // ✅ direct function
 );
 

@@ -21,7 +21,7 @@ async function AI_Model_controller (req, res){
             patientName,
             imageUrl
         );
-
+        console.log("Diagnosis result:", result);
         res.status(201).json({
             success: true,
             message: 'Diagnosis created successfully',

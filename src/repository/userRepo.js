@@ -14,7 +14,7 @@ async function CreateUser(UserDetails){
     try {
         const response=await User.create(UserDetails)
         return response;
-    } catch (error) {
+    } catch (error) {   
         console.log("unexpected error",error);
     }
 }

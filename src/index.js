@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 // const { URL } = require("./config/   serverConfig");
 const cors = require("cors");
 const { URL } = require("./config/serverConfig");
+const Modelrouter = require("./router/AI_Model");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(cors({
 
 app.use("/User",UserRouter);
 app.use("/login",authRouter);
+app.use("/AI_Model",Modelrouter);
 
 // test route
 app.get("/", (req, res) => {

@@ -2,7 +2,7 @@
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
 // const { JWT_SECRET, JWT_EXPIRY } = require("../config/serverConfig");
-const { findUser } = require('../repository/UserRepo');
+const { findUser } = require('../repository/userRepo');
 const { JWT_SECRET, JWT_EXPIRY } = require('../config/serverConfig');
 async function loginUser(authDetails) {
     const email=authDetails.email;

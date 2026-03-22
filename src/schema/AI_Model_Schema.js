@@ -28,7 +28,7 @@ const AI_Model_Schema = new mongoose.Schema(
         type: Number,   // e.g. 0.92
         required: true,
         min: 0,
-        max: 1
+        max: 100
     },
 
     heatmapUrl: {

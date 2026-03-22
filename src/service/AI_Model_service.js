@@ -1,84 +1,57 @@
-// // const diagnosisRepository = require('../repositories/diagnosisRepository');
-// // const aiService = require('./aiService');
+const axios = require("axios");
+const FormData = require("form-data");
+const fs = require("fs");
 
-// const { cloudinary } = require("../config/cloudinary");
-// const AI_Model_repo = require("../repository/AI_Model_repo");
-// const fs = require("fs/promises");
+const cloudinary = require("../config/cloudinary");
 
-// class AI_Model_service {
-//   async createDiagnosis(userId, patientName, imageUrl) {
-//     // Call AI service
-
-//     if (imageUrl) {
-//       try {
-//         const cloudinaryResponse = await cloudinary.uploader.upload(imageUrl);
-//         var productImage = cloudinaryResponse.secure_url;
-//         await fs.unlink(process.cwd() + "/" + imageUrl);
-//       } catch (error) {
-//         console.log(error);
-//         throw new InternalServerError();
-//       }
-//     }
-//     // const result = await aiService.predictImage(imageUrl);
-
-//     const data = {
-//       userId,
-//       patientName,
-//       imageUrl,
-//       prediction: "Normal",
-//       confidence: 0.95,
-//       heatmapUrl: "https://example.com/heatmap.jpg",
-//     };
-
-//     return await AI_Model_repo.createDiagnosis(data);
-//   }
-
-//   async getUserDiagnoses(userId) {
-//     return await AI_Model_repo.getDiagnosesByUser(userId);
-//   }
-// }
-
-// module.exports = new AI_Model_service();
-
-const cloudinary = require("../config/cloudinary"); // ✅ FIXED
 const AI_Model_repo = require("../repository/AI_Model_repo");
-const fs = require("fs/promises");
 
 class AI_Model_service {
   async createDiagnosis(userId, patientName, filePath) {
-    let imageUrl = "";
-
     try {
-      // ✅ Upload to Cloudinary
-      const cloudinaryResponse = await cloudinary.uploader.upload(filePath);
+      // ✅ 1. Send file to AI API
+      const formData = new FormData();
+      formData.append("file", fs.createReadStream(filePath));
 
-      imageUrl = cloudinaryResponse.secure_url;
+      const aiResponse = await axios.post(
+        "https://gauravgupta8566-pneumonia-detection-api.hf.space/predict",
+        formData,
+        {
+          headers: formData.getHeaders(),
+        },
+      );
 
-      // ✅ Delete local file
-      await fs.unlink(filePath);
+      // ✅ 2. Extract AI result
+      const prediction = aiResponse.data.diagnosis;
+      const confidence = aiResponse.data.confidence; // FIX
+      const heatmapBase64 = aiResponse.data.heatmap_image;
 
+      // 1. Upload original image
+      const upload = await cloudinary.uploader.upload(filePath);
+      const imageUrl = upload.secure_url;
+
+      // 2. Upload heatmap
+      const heatmapUpload = await cloudinary.uploader.upload(heatmapBase64);
+      const heatmapUrl = heatmapUpload.secure_url;
+
+      // ✅ 4. Delete local file
+      fs.unlinkSync(filePath);
+      // 3. Save BOTH
+      const data = {
+        userId,
+        patientName,
+        imageUrl, // ✅ REQUIRED
+        prediction,
+        confidence,
+        heatmapUrl,
+      };
+
+      return await AI_Model_repo.createDiagnosis(data);
     } catch (error) {
-      console.log("Cloudinary Error:", error);
-      throw new Error("Image upload failed");
+      console.log("AI Service Error:", error);
+      throw new Error("Diagnosis failed");
     }
-
-    // TODO: Call AI service here later
-
-    const data = {
-      userId,
-      patientName,
-      imageUrl,   // ✅ correct (cloud URL)
-      prediction: "Normal",
-      confidence: 0.95,
-      heatmapUrl: "https://example.com/heatmap.jpg",
-    };
-
-    return await AI_Model_repo.createDiagnosis(data);
-  }
-
-  async getUserDiagnoses(userId) {
-    return await AI_Model_repo.getDiagnosesByUser(userId);
   }
 }
 
-module.exports = new AI_Model_service(); 
+module.exports = new AI_Model_service();

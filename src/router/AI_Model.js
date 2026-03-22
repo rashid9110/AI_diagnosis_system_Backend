@@ -15,25 +15,6 @@ Modelrouter.post(
     AI_Model_controller   // ✅ direct function
 );
 
-// // ✅ Get all diagnoses of logged-in user
-// router.get(
-//     '/my-diagnoses',
-//     isLoggedIn,
-//     AI_Model_controller.getUserDiagnoses 
-// );
 
-// // ✅ Get single diagnosis by ID
-// router.get(
-//     '/:id',
-//     isLoggedIn,
-//     diagnosisController.getDiagnosisById
-// );
-
-// // ✅ Delete diagnosis
-// router.delete(
-//     '/:id',
-//     isLoggedIn,
-//     diagnosisController.deleteDiagnosis
-// );
 
 module.exports = Modelrouter;

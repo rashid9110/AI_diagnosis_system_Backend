@@ -13,7 +13,7 @@ async function findUser(params) {
 async function CreateUser(UserDetails){
     try {
         const response=await User.create(UserDetails)
-        return response;
+        return response; 
     } catch (error) {   
         console.log("unexpected error",error);
     }

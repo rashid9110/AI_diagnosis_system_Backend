@@ -5,10 +5,15 @@ const { loginUser } = require("../service/AuthService");
 async function logout(req, res) {
   // console.log('Cookie from postman :',req.cookies)
   console.log("Cookie from postman :", req.cookies);
+  // res.cookie("authToken", "", {
+  //   httpOnly: true,
+  //   secure: false,
+  //   maxAge: 7 * 24 * 60 * 60 * 1000,
+  // });
   res.cookie("authToken", "", {
     httpOnly: true,
-    secure: false,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    secure: true,
+    sameSite: "None",
   });
   return res.status(200).json({
     success: true,
@@ -65,10 +70,16 @@ async function login(req, res) {
     //     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     //     sameSite: 'None' // Necessary for cross-origin cookies
     // });
+    // res.cookie("authToken", response.token, {
+    //   httpOnly: true,
+    //   secure: false, // localhost
+    //   sameSite: "Lax", // ✅ FIX THIS
+    //   maxAge: 7 * 24 * 60 * 60 * 1000,
+    // });
     res.cookie("authToken", response.token, {
       httpOnly: true,
-      secure: false, // localhost
-      sameSite: "Lax", // ✅ FIX THIS
+      secure: true, // ✅ MUST for HTTPS (Netlify + Render)
+      sameSite: "None", // ✅ MUST for cross-origin
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return res.status(200).json({

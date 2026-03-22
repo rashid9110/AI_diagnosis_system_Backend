@@ -1,4 +1,4 @@
-const { CreateUser, findUser } = require("../repository/UserRepo");
+const { CreateUser, findUser } = require("../repository/userRepo");
 
 // const { findUser, CreateUse } = require("../repository/userRepo");
 async function userRegistretion(UserDetails) {

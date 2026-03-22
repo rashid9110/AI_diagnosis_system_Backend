@@ -10,7 +10,7 @@ async function loginUser(authDetails) {
 
     //1. check if there is a registered user with the given email
      const user=await findUser({email});
-
+ 
      if(!user){
         throw {message:"No user found with the given email", statusCode:404};
      }

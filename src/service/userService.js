@@ -5,12 +5,12 @@ async function userRegistretion(UserDetails) {
      const response=await findUser({ email: UserDetails.email, mobileNumber: UserDetails.mobileNumber });
      console.log("Response from findUser:", response);
      if (response) {
-        throw {response: "User already exists with this email or mobile number", status: 400};
+        throw {response: "User already exists with this email ", status: 400};
      }
         
-   //if user not exists then create a new user
+   //if user not exists then create a new user   
 
-   const newUser= await CreateUser({
+   const newUser= await CreateUser({  
         firstName: UserDetails.firstName,
         lastName: UserDetails.lastName,
         mobileNumber: UserDetails.mobileNumber,

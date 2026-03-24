@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 // const { URL } = require("./config/serverConfig");
 const Modelrouter = require("./router/AI_Model");
+const PatientRouter = require("./router/patientRoutes");
 
 const app = express();
 
@@ -19,7 +20,7 @@ app.use(express.text({ limit: "50mb" }));   // optional if you send text payload
 app.use(cookieParser());
 
 app.use(cors({
-  origin: "https://ai-diagnosis.netlify.app",            // frontend URL e.g. "http://localhost:5173"
+  origin: ["https://ai-diagnosis.netlify.app", "http://localhost:5173"],            // frontend URL e.g. "http://localhost:5173"
   credentials: true 
 }));
  
@@ -27,6 +28,7 @@ app.use(cors({
 app.use("/User",UserRouter);
 app.use("/login",authRouter);
 app.use("/AI_Model",Modelrouter);
+app.use("/patient",PatientRouter);
 
 // test route
 app.get("/", (req, res) => {

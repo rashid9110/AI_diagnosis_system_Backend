@@ -1,50 +1,57 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const AI_Model_Schema = new mongoose.Schema(
-{
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
+const AI_Model_Schema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 
-    patientName: {
-        type: String,
-        required: true,
-        trim: true
-    },
+  patientId: {   
+    type: String,
+    required: [true, "Patient ID is required"],
+    trim: true,
+    minlength: [6, "Patient ID must be at least 6 characters"], // e.g. PAT001
+    maxlength: [15, "Patient ID cannot exceed 15 characters"],
+  },
+  patientInfo: {
+    name: String,
+    age: Number,
+    gender: String,
+    phone: String,
+  },
 
-    imageUrl: {
-        type: String,   // Cloudinary / S3 URL
-        required: true
-    },
+  imageUrl: {
+    type: String, // Cloudinary / S3 URL
+    required: true,
+  },
 
-    prediction: {
-        type: String,   // e.g. Pneumonia / Normal
-        required: true
-    },
+  prediction: {
+    type: String, // e.g. Pneumonia / Normal
+    required: true,
+  },
 
-    confidence: {
-        type: Number,   // e.g. 0.92
-        required: true,
-        min: 0,
-        max: 100
-    },
+  confidence: {
+    type: Number, // e.g. 0.92
+    required: true,
+    min: 0,
+    max: 100,
+  },
 
-    heatmapUrl: {
-        type: String   // optional but recommended
-    },
+  heatmapUrl: {
+    type: String, // optional but recommended
+  },
 
-    status: {
-        type: String,
-        enum: ['processing', 'completed', 'failed'],
-        default: 'completed'
-    },
+  status: {
+    type: String,
+    enum: ["processing", "completed", "failed"],
+    default: "completed",
+  },
 
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model('Diagnosis', AI_Model_Schema);
+module.exports = mongoose.model("Diagnosis", AI_Model_Schema);

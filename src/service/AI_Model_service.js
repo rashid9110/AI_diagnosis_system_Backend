@@ -1,4 +1,4 @@
-// 
+//
 
 const axios = require("axios");
 const FormData = require("form-data");
@@ -6,11 +6,21 @@ const streamifier = require("streamifier");
 
 const cloudinary = require("../config/cloudinary");
 const AI_Model_repo = require("../repository/AI_Model_repo");
+// const { getPatientById } = require("../repository/patientRepo");
+const patientRepo = require("../repository/patientRepo");
 
 class AI_Model_service {
-  async createDiagnosis(userId, patientName, fileBuffer, fileName) {
+  async createDiagnosis(userId, patientId, fileBuffer, fileName) {
     try {
-      // ✅ 1. Send to AI API
+      // 0. Fetch patient details from DB
+      console.log("Fetching patient with ID:", patientId);
+      const patient = await patientRepo.getPatientById(patientId);
+      console.log("Fetched patient:", patient);
+
+      if (!patient) {
+        throw new Error("Unauthorized patient");
+      }
+      // 1. Send to AI API
       const formData = new FormData();
       formData.append("file", fileBuffer, fileName);
 
@@ -19,7 +29,7 @@ class AI_Model_service {
         formData,
         {
           headers: formData.getHeaders(),
-        }
+        },
       );
 
       const prediction = aiResponse.data.diagnosis;
@@ -33,7 +43,7 @@ class AI_Model_service {
           (error, result) => {
             if (error) reject(error);
             else resolve(result);
-          }
+          },
         );
         streamifier.createReadStream(fileBuffer).pipe(stream);
       });
@@ -47,15 +57,21 @@ class AI_Model_service {
       // ✅ 4. Save to DB
       const data = {
         userId,
-        patientName,
+        patientId,
         imageUrl,
         prediction,
         confidence,
         heatmapUrl,
+        //snapshot
+        patientInfo: {
+          name: patient.name,
+          age: patient.age,
+          gender: patient.gender,
+          phone: patient.phone,
+        },
       };
 
       return await AI_Model_repo.createDiagnosis(data);
-
     } catch (error) {
       console.error("🔥 AI Service Error:", error);
       throw new Error("Diagnosis failed");

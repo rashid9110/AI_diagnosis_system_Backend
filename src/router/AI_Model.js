@@ -2,7 +2,7 @@ const express = require('express');
 const Modelrouter = express.Router();
 
 const { isLoggedIn } = require('../validation/authValidation');
-const { AI_Model_controller } = require('../controller/AI_Model_controller');
+const { AI_Model_controller, getPatientsWithImagesController } = require('../controller/AI_Model_controller');
 const uploader = require('../Middleware/multerMiddleware');
 const multer = require('multer');
 
@@ -15,6 +15,7 @@ Modelrouter.post(
     AI_Model_controller   // ✅ direct function
 );
 
+Modelrouter.get('/patients', isLoggedIn, getPatientsWithImagesController);
 
 
 module.exports = Modelrouter;

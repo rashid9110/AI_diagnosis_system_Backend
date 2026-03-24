@@ -44,6 +44,27 @@ async function AI_Model_controller(req, res) {
   }
 }
 
+
+async function getPatientsWithImagesController(req, res) {
+  try {
+    const userId = req.user.id;
+
+    const data = await AI_Model_service.getPatientsWithImages(userId);
+    console.log("Fetched patient reports:", data);
+    res.status(200).json({
+      success: true,
+      data
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+}
+
 module.exports = {
   AI_Model_controller,
+  getPatientsWithImagesController
 };

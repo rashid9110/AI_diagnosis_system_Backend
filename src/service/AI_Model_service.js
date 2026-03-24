@@ -77,6 +77,14 @@ class AI_Model_service {
       throw new Error("Diagnosis failed");
     }
   }
+  
+  async getPatientsWithImages(userId) {
+  try {
+    return await AI_Model_repo.getPatientsWithImages(userId);
+  } catch (error) {
+    throw new Error("Failed to fetch patient reports");
+  }
+}
 }
 
 module.exports = new AI_Model_service();

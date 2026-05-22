@@ -47,8 +47,9 @@ async function AI_Model_controller(req, res) {
 
 async function getPatientsWithImagesController(req, res) {
   try {
+  
     const userId = req.user.id;
-
+    console.log("Fetching patient reports for user ID:", userId);
     const data = await AI_Model_service.getPatientsWithImages(userId);
     console.log("Fetched patient reports:", data);
     res.status(200).json({
